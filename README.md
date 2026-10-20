@@ -93,7 +93,7 @@ pwsh -File tools/vm-route.ps1 -Preset presets/compose.json
 
 ### 3. 出问题了查清单
 
-[PITFALLS.md](PITFALLS.md) —— 七条，每条都是「现象 / 原因 / 解法 / 怎么验证」。
+[PITFALLS.md](PITFALLS.md) —— 八条，每条都是「现象 / 原因 / 解法 / 怎么验证」。
 
 ---
 
@@ -167,7 +167,7 @@ if ($state.strips[0].A1 -eq 1) {
 **Roadmap（欢迎 PR）：**
 
 ```
-□ OBS：obs-websocket 控制音频源与场景
+□ OBS：obs-websocket 控制场景与录制（音频源去重已写进 PITFALLS 坑 8）
 □ REAPER：读取 asio_driver / buffer / 采样率，检查输入监听
 □ 会议软件：切换麦克风设备的自动化（目前只能手动）
 □ VBAN：用 UDP 文本协议替代 DLL 调用（可以跨机器）
