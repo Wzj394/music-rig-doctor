@@ -1,0 +1,13 @@
+# 日志 / 临时
+*.log
+*.tmp
+*.bak
+
+# PowerShell 缓存
+*.ps1xml
+
+# 编辑器
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

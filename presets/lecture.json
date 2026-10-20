@@ -1,0 +1,16 @@
+{
+  "name": "lecture",
+  "description": "录课 / 直播 / 线上教学：麦克风只录不听（防回声），DAW 与系统声音又听又录",
+  "match": {
+    "mic":    { "kind": "hardware", "index": 0 },
+    "daw":    { "kind": "virtual",  "index": 1 },
+    "system": { "kind": "virtual",  "index": 0 }
+  },
+  "routes": {
+    "mic":    { "A1": 0, "A2": 0, "A3": 0, "B1": 1, "B2": 0, "Mono": 1 },
+    "daw":    { "A1": 1, "A2": 0, "A3": 0, "B1": 1, "B2": 0, "Mono": 0 },
+    "system": { "A1": 1, "A2": 0, "A3": 0, "B1": 1, "B2": 0, "Mono": 0 },
+    "_other": { "A1": 0, "A2": 0, "A3": 0, "B1": 0, "B2": 0, "Mono": 0 }
+  },
+  "buses": { "mono": 0 }
+}
