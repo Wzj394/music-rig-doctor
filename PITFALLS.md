@@ -365,17 +365,65 @@ Voicemeeter 的总线绑到 ASIO 设备时，要指定用哪几个输出通道�
 
 ## 附：重启电脑后配置全没了
 
-**Voicemeeter 默认不会开机自启，也不会自动恢复上次的路由。**
+**现象**
 
-三个办法：
+昨天配好的路由，今天开机后全变回去了。
+
+**原因**
+
+有三层，叠加在一起：
 
 ```
-① 加开机自启（最简单）
-② Menu → Save Settings，下次启动会恢复
-③ 用本仓库的 preset，开机后跑一遍 vm-route.ps1
+① Voicemeeter 默认不会开机自启          →  进程根本不在
+② 即使自启了，它加载的是"上次退出时的状态"
+   （Documents\Voicemeeter\VoicemeeterBanana_TodaySettings.xml）
+   而不是"你配好的那一套"
+③ 如果上次是被强杀 / 断电 / 调试到一半
+   →  恢复出来的就是那个半成品状态
 ```
 
-**第 ③ 个的好处是：配置变成了文件，可以进 git，可以 diff，可以分享。**
+**解法：把配置变成文件，开机时重新套用**
+
+```powershell
+# 一条命令：启动 Voicemeeter → 等引擎就绪 → 套用 preset → 验证
+pwsh -File tools/vm-autostart.ps1 -Preset presets/lecture.json
+```
+
+**它的好处是"配置进 git"：**
+
+```
+可以 diff（今天改了什么，一眼看出来）
+可以分享（别人拿去改两个字段就能用）
+可以回滚（改坏了 git checkout）
+```
+
+**装成开机自动跑（不需要管理员权限）：**
+
+在启动文件夹放一个 `.vbs`，内容：
+
+```vbs
+Set sh = CreateObject("WScript.Shell")
+sh.Run "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""<仓库路径>\tools\vm-autostart.ps1""", 0, False
+```
+
+```
+启动文件夹路径：Win+R → shell:startup
+```
+
+> **为什么不推荐计划任务：**注册计划任务需要管理员权限。
+> **为什么不用 .cmd：**会闪一个黑框。.vbs 可以完全隐藏。
+
+**怎么验证**
+
+```
+重启一次，看 autostart.log：
+    ✅ 引擎就绪 → ✅ preset 已应用并验证通过
+    = 成功
+
+如果日志里是"等了 N 秒仍未就绪"：
+    →  开机时音频服务比 Voicemeeter 起得慢，把 -WaitSeconds 调大
+```
+
 
 ---
 

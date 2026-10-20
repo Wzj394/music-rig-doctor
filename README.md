@@ -104,6 +104,35 @@ pwsh -File tools/vm-route.ps1 -Preset presets/compose.json
 | `tools/vm-read.ps1` | 读出所有通道/总线的真实值，输出 JSON | 只读 |
 | `tools/vm-route.ps1` | 按 preset 写路由，写完自动读回验证 | 会写 |
 | `tools/vm-doctor.ps1` | 体检：运行状态、设备绑定、采样率、路由一致性 | 只读 |
+| `tools/vm-autostart.ps1` | 开机用：启动引擎 → 等就绪 → 套用预设 → 写日志 | 会写 |
+
+### 开机自动套用预设
+
+**为什么需要：**Voicemeeter 会持久化「上次退出时的状态」，
+但那不一定是你要的那套 —— 强杀进程、断电、或者上次调试到一半，
+重启后拿到的就是那个半成品状态。
+
+**把 preset 变成开机动作之后，配置就变成了文件（可以 diff、可以分享、可以回滚）：**
+
+```powershell
+# 先手动确认能跑
+pwsh -File tools/vm-autostart.ps1 -Preset presets/lecture.json
+
+# 再看 autostart.log：引擎就绪 → preset 已应用并验证通过
+```
+
+**装成开机自动跑（不需要管理员权限）** —— 在启动文件夹放一个 `.vbs`：
+
+```vbs
+Set sh = CreateObject("WScript.Shell")
+sh.Run "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""<仓库路径>\tools\vm-autostart.ps1""", 0, False
+```
+
+```
+启动文件夹：Win+R → shell:startup
+```
+
+> 别用计划任务（要管理员权限），也别用 .cmd（会闪黑框）。
 
 ### 给 Agent 的用法
 
@@ -153,9 +182,11 @@ if ($state.strips[0].A1 -eq 1) {
 README.md          你正在看的
 PITFALLS.md        ★ 踩坑清单（最有价值的部分）
 tools/
+  _vmlib.ps1       共享的 API 封装（含 dirty flag 处理）
   vm-read.ps1      读真实状态
   vm-route.ps1     写路由 + 读回验证
   vm-doctor.ps1    体检
+  vm-autostart.ps1 开机自动套用预设
 presets/
   lecture.json     录课/直播
   compose.json     编曲
