@@ -93,7 +93,7 @@ pwsh -File tools/vm-route.ps1 -Preset presets/compose.json
 
 ### 3. 出问题了查清单
 
-[PITFALLS.md](PITFALLS.md) —— 八条，每条都是「现象 / 原因 / 解法 / 怎么验证」。
+[PITFALLS.md](PITFALLS.md) —— 八条技术坑 + 两条「人的坑」，每条都是「现象 / 原因 / 解法 / 怎么验证」。
 
 ---
 
